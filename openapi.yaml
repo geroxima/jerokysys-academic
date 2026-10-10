@@ -1,0 +1,456 @@
+openapi: 3.0.3
+
+info:
+  title: jerokysys
+  version: 1.0.0
+
+paths: {}
+
+components:
+  schemas:
+
+    # ============================================================
+    # PERSON
+    # ============================================================
+
+    PersonDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+
+        firstName:
+          type: string
+          maxLength: 100
+
+        lastName:
+          type: string
+          maxLength: 100
+
+        phone:
+          type: string
+          maxLength: 20
+
+        email:
+          type: string
+          maxLength: 100
+
+      required:
+        - firstName
+        - lastName
+
+
+    # ============================================================
+    # STUDENT
+    # ============================================================
+
+    StudentDTO:
+      allOf:
+        - $ref: '#/components/schemas/PersonDTO'
+        - type: object
+          properties:
+            birthDate:
+              type: string
+              format: date
+            guardianId:
+              type: integer
+              format: int64
+
+          required:
+            - birthDate
+
+
+    # ============================================================
+    # INSTRUCTOR
+    # ============================================================
+
+    InstructorDTO:
+      allOf:
+        - $ref: '#/components/schemas/PersonDTO'
+
+
+    # ============================================================
+    # GUARDIAN
+    # ============================================================
+
+    GuardianDTO:
+      allOf:
+        - $ref: '#/components/schemas/PersonDTO'
+        - type: object
+          properties:
+            relationship:
+              type: string
+              maxLength: 50
+
+
+    # ============================================================
+    # DISCIPLINE
+    # ============================================================
+
+    DisciplineDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+
+        name:
+          type: string
+          maxLength: 100
+
+        description:
+          type: string
+
+      required:
+        - name
+
+
+    # ============================================================
+    # DANCE CLASS
+    # ============================================================
+
+    DanceClassDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+
+        disciplineId:
+          type: integer
+          format: int64
+
+        level:
+          type: string
+          maxLength: 50
+
+        dayOfWeek:
+          type: string
+          maxLength: 100
+
+        startTime:
+          type: string
+          format: time
+
+        endTime:
+          type: string
+          format: time
+
+        maxCapacity:
+          type: integer
+          format: int32
+
+        monthlyPrice:
+          type: number
+
+        status:
+          $ref: '#/components/schemas/ClassStatus'
+
+      required:
+        - disciplineId
+        - level
+        - dayOfWeek
+        - startTime
+        - endTime
+        - maxCapacity
+        - monthlyPrice
+
+
+    # ============================================================
+    # ENROLLMENT
+    # ============================================================
+
+    EnrollmentDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+
+        studentId:
+          type: integer
+          format: int64
+
+        classId:
+          type: integer
+          format: int64
+
+        enrollmentDate:
+          type: string
+          format: date
+
+        agreedPrice:
+          type: number
+
+        status:
+          $ref: '#/components/schemas/EnrollmentStatus'
+
+      required:
+        - studentId
+        - classId
+        - enrollmentDate
+
+    # ============================================================
+    # EXAM
+    # ============================================================
+
+    ExamDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+
+        danceClassId:
+          type: integer
+          format: int64
+
+        examName:
+          type: string
+          maxLength: 150
+
+        examDate:
+          type: string
+          format: date
+
+      required:
+        - danceClassId
+        - examName
+        - examDate
+
+
+    # ============================================================
+    # EXAM RESULT
+    # ============================================================
+
+    ExamResultDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+
+        examId:
+          type: integer
+          format: int64
+
+        studentId:
+          type: integer
+          format: int64
+
+        score:
+          type: number
+
+        remarks:
+          type: string
+
+      required:
+        - examId
+        - studentId
+
+    # ============================================================
+    # INVOICE DETAIL
+    # ============================================================
+
+    InvoiceDetailDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+
+        invoiceId:
+          type: integer
+          format: int64
+
+        description:
+          type: string
+          maxLength: 255
+
+        amount:
+          type: number
+
+        vatRate:
+          type: integer
+          format: int32
+
+        correspondingMonth:
+          type: string
+          maxLength: 20
+
+      required:
+        - invoiceId
+        - description
+        - amount
+
+    # ============================================================
+    # INVOICE
+    # ============================================================
+
+    InvoiceDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+
+        studentId:
+          type: integer
+          format: int64
+
+        timbrado:
+          type: string
+          maxLength: 20
+
+        invoiceNumber:
+          type: string
+          maxLength: 20
+
+        taxId:
+          type: string
+          maxLength: 20
+
+        businessName:
+          type: string
+          maxLength: 150
+
+        issueDate:
+          type: string
+          format: date
+
+        saleCondition:
+          $ref: '#/components/schemas/SaleCondition'
+
+        totalAmount:
+          type: number
+
+        totalIva:
+          type: number
+
+        paymentStatus:
+          $ref: '#/components/schemas/InvoiceStatus'
+
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvoiceDetailDTO'
+
+      required:
+        - studentId
+        - timbrado
+        - invoiceNumber
+        - taxId
+        - businessName
+        - issueDate
+        - totalAmount
+
+    # ============================================================
+    # INSTRUCTOR PAYMENT DETAIL
+    # ============================================================
+
+    InstructorPaymentDetailDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+
+        instructorPaymentId:
+          type: integer
+          format: int64
+
+        description:
+          type: string
+          maxLength: 255
+
+        amount:
+          type: number
+
+      required:
+        - instructorPaymentId
+        - description
+        - amount
+
+    # ============================================================
+    # INSTRUCTOR PAYMENT
+    # ============================================================
+
+    InstructorPaymentDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+
+        instructorId:
+          type: integer
+          format: int64
+
+        paymentDate:
+          type: string
+          format: date
+
+        totalAmount:
+          type: number
+
+        paymentMethod:
+          type: string
+          maxLength: 50
+
+        period:
+          type: string
+          maxLength: 50
+
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstructorPaymentDetailDTO'
+
+      required:
+        - instructorId
+        - paymentDate
+        - totalAmount
+
+    # ============================================================
+    # ENUMS
+    # ============================================================
+
+    ClassStatus:
+      type: string
+      enum:
+        - ACTIVE
+        - INACTIVE
+        - CANCELLED
+        - SUSPENDED
+
+    InvoiceStatus:
+      type: string
+      enum:
+        - PENDING
+        - PAID
+        - CANCELLED
+
+    EnrollmentStatus:
+      type: string
+      enum:
+        - ACTIVE
+        - INACTIVE
+        - DROPPED
+        - COMPLETED
+
+    SaleCondition:
+      type: string
+      enum:
+        - CONTADO
+        - CREDITO

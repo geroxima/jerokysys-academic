@@ -1,0 +1,22 @@
+2026-10-09 DanceClass Controller
+2026-10-09 Discipline Controller
+2026-10-09 Enrollement Controlle
+2026-10-09 Exam Controller
+2026-10-09 ExamResult Controller
+(C) 2026-10-09 DanceClass Mapper
+(C) 2026-10-09 Discipline Mapper
+(C) 2026-10-09 Enrollement Mapper
+(C) 2026-10-09 Exam Mapper
+(C) 2026-10-09 ExamResult Mapper
+(B) 2026-10-09 DanceClass Service
+(B) 2026-10-09 Discipline Service
+(B) 2026-10-09 Enrollement Service
+(B) 2026-10-09 Exam Service
+(B) 2026-10-09 ExamResult Service
+(A) 2026-10-09 DanceClass Repo
+(A) 2026-10-09 Discipline Repo
+(A) 2026-10-09 Enrollement Repo
+(A) 2026-10-09 Exam Repo
+(A) 2026-10-09 ExamResult Repo
+(B) 2026-10-10 Fix status default 'Active'->'ACTIVE' in db/changelog (classes, enrollments)
+(B) 2026-10-10 ALTER Neon classes/enrollments status default to 'ACTIVE'
