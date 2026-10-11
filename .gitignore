@@ -35,3 +35,6 @@ src/main/resources/config/private.properties
 
 ### logs
 *.log
+
+### todo
+todo.txt
