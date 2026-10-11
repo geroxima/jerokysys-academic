@@ -101,7 +101,7 @@ databaseChangeLog:
               - column: { name: end_time, type: time, constraints: { nullable: false } }
               - column: { name: max_capacity, type: int, constraints: { nullable: false } }
               - column: { name: monthly_price, type: "numeric(10,2)", defaultValueNumeric: "0", constraints: { nullable: false } }
-              - column: { name: status, type: varchar(20), defaultValue: 'Active' }
+              - column: { name: status, type: varchar(20), defaultValue: 'ACTIVE' }
               - column: { name: created_at, type: timestamp, constraints: { nullable: false } }
 
   - changeSet:
@@ -148,7 +148,7 @@ databaseChangeLog:
                   constraints: { nullable: false, foreignKeyName: fk_enrollment_class, references: classes(id) }
               - column: { name: enrollment_date, type: date, defaultValueComputed: CURRENT_DATE, constraints: { nullable: false } }
               - column: { name: agreed_price, type: "numeric(10,2)", remarks: 'Precio personalizado. Si es nulo, usa Classes.monthly_price' }
-              - column: { name: status, type: varchar(20), defaultValue: 'Active' }
+              - column: { name: status, type: varchar(20), defaultValue: 'ACTIVE' }
               - column: { name: created_at, type: timestamp, constraints: { nullable: false } }
 
   - changeSet:
