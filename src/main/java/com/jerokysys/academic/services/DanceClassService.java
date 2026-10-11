@@ -21,8 +21,6 @@ import com.jerokysys.commons.domain.enums.ClassStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import lombok.Getter;
-
 @Service
 public class DanceClassService extends AbstractBaseService<DanceClass, DanceClassDTO, PagedFilter> {
 
