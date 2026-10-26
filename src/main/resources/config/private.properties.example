@@ -1,3 +1,4 @@
 db.url=jdbc:postgresql://web
 db.username=db_user
 db.password=db_passowrd
+JWT_SECRET=change-me-32-bytes-base64

@@ -1,7 +1,12 @@
 package com.jerokysys.academic.services;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import com.jerokysys.academic.config.DomainCache;
+import com.jerokysys.academic.config.RedisCacheConfig;
 import com.jerokysys.commons.service.AbstractBaseService;
 import com.jerokysys.dto.DanceClassDTO;
 
@@ -20,25 +25,48 @@ import com.jerokysys.commons.domain.enums.ClassStatus;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @Service
+@PreAuthorize("hasAnyRole('ADMIN','PROFESSOR','SECRETARY')")
 public class DanceClassService extends AbstractBaseService<DanceClass, DanceClassDTO, PagedFilter> {
 
     @Getter
     private final DanceClassRepo danceClassRepo;
     private final DisciplineRepo disciplineRepo;
     private final DanceClassMapper mapper;
+    private final DomainCache domainCache;
 
     public DanceClassService(DanceClassRepo danceClassRepo,
             DisciplineRepo disciplineRepo,
-            DanceClassMapper mapper) {
+            DanceClassMapper mapper,
+            DomainCache domainCache) {
         super(danceClassRepo);
         this.danceClassRepo = danceClassRepo;
         this.disciplineRepo = disciplineRepo;
         this.mapper = mapper;
+        this.domainCache = domainCache;
     }
 
     @Override
+    @Cacheable(value = RedisCacheConfig.CACHE_DANCE_CLASS, key = "#id")
+    public DanceClassDTO getById(Long id) {
+        return super.getById(id);
+    }
+
+    @Override
+    public List<DanceClassDTO> getAll() {
+        List<DanceClassDTO> list = super.getAll();
+        domainCache.putAll(RedisCacheConfig.CACHE_DANCE_CLASS, list, DanceClassDTO::getId);
+        return list;
+    }
+
+    @Override
+    @CachePut(value = RedisCacheConfig.CACHE_DANCE_CLASS,
+            key = "#result.id",
+            unless = "#result == null || #result.id == null")
+    @CacheEvict(value = RedisCacheConfig.CACHE_DANCE_CLASS, allEntries = true)
+    @PreAuthorize("hasAnyRole('ADMIN','PROFESSOR')")
     public DanceClassDTO create(DanceClassDTO dto) {
         DanceClass entity = toEntity(dto);
         entity.setDiscipline(loadDiscipline(dto.getDisciplineId()));
@@ -46,6 +74,8 @@ public class DanceClassService extends AbstractBaseService<DanceClass, DanceClas
     }
 
     @Override
+    @CacheEvict(value = RedisCacheConfig.CACHE_DANCE_CLASS, allEntries = true)
+    @PreAuthorize("hasAnyRole('ADMIN','PROFESSOR')")
     public DanceClassDTO update(Long id, DanceClassDTO dto) {
         DanceClass entity = danceClassRepo.findById(id)
                 .orElseThrow(() -> new BusinessException(
@@ -57,6 +87,13 @@ public class DanceClassService extends AbstractBaseService<DanceClass, DanceClas
             entity.setDiscipline(loadDiscipline(dto.getDisciplineId()));
         }
         return toDto(danceClassRepo.save(entity));
+    }
+
+    @Override
+    @CacheEvict(value = RedisCacheConfig.CACHE_DANCE_CLASS, allEntries = true)
+    @PreAuthorize("hasAnyRole('ADMIN','PROFESSOR')")
+    public void delete(Long id) {
+        super.delete(id);
     }
 
     public List<DanceClassDTO> getByDiscipline(Long disciplineId) {
