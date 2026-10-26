@@ -90,3 +90,19 @@ OpenAPI docs are enabled. Access them at these URLs when the service runs:
 ```sh
 ./mvnw test
 ```
+
+## Redis cache
+
+The service caches DTOs in Redis to protect the database. Every microservice
+runs its own Redis on `localhost:6379`, database `0`.
+
+- Keys: `<key-prefix>:<domain>:<id>`, for example `academic:enrollment:5`
+- Domains and TTLs: `cache.domains.*` in `src/main/resources/application.properties`
+  (`0` = persistent, any other value = seconds)
+- Reads by id go through `@Cacheable`, writes through `@CachePut` and `@CacheEvict`
+- List and paginated results are never cached as a whole: each element is stored
+  individually by `DomainCache`
+- Every operation is logged as `Cache GET|SET|DELETE <key>` with HIT/MISS and TTL;
+  the level is `logging.level.com.jerokysys.academic.config.LoggingCache`
+- If Redis is unavailable, the request still succeeds against PostgreSQL and the
+  failure is logged
