@@ -35,6 +35,10 @@ src/main/resources/config/private.properties
 
 ### logs
 *.log
+*.log.*
+
+### redis
+dump.rdb
 
 ### todo
 todo.txt
