@@ -47,9 +47,9 @@ public class SecurityConfig {
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
                                 "/webjars/**", "/error").permitAll()
                         // Escritura: solo ADMIN y PROFESSOR (SECRETARY es solo lectura).
-                        .requestMatchers(HttpMethod.POST, "/**").hasAnyRole("ADMIN", "SECRETARY")
-                        .requestMatchers(HttpMethod.PUT, "/**").hasAnyRole("ADMIN", "SECRETARY")
-                        .requestMatchers(HttpMethod.DELETE, "/**").hasAnyRole("ADMIN", "SECRETARY")
+                        .requestMatchers(HttpMethod.POST, "/**").hasAnyRole("ADMIN", "PROFESSOR")
+                        .requestMatchers(HttpMethod.PUT, "/**").hasAnyRole("ADMIN", "PROFESSOR")
+                        .requestMatchers(HttpMethod.DELETE, "/**").hasAnyRole("ADMIN", "PROFESSOR")
                         // Lectura: los tres roles.
                         .requestMatchers(HttpMethod.GET, "/**")
                                 .hasAnyRole("ADMIN", "PROFESSOR", "SECRETARY")
